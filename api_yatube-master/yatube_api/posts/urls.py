@@ -1,7 +1,6 @@
-app_name = 'posts'
+app_name = "posts"
 
-urlpatterns = [
-]
+urlpatterns = []
 
 # End of posts app URLs.
 # End of file.

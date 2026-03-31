@@ -38,6 +38,7 @@ class LooseVersion:
         nums = m.group(1).split(".")
         object.__setattr__(self, "version", [int(x) for x in nums])
 
+
 # End of shim module.
 
 # noqa: D107

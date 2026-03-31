@@ -6,7 +6,6 @@ from typing import Any, Dict, List, Optional
 
 import requests
 
-
 POSTMAN_PATH = "postman_collection/CRUD_for_yatube.postman_collection.json"
 
 
@@ -150,12 +149,12 @@ def _assert_post(obj: Any, where: str, username: Optional[str]) -> None:
         assert obj["author"] == username, f"{where}: author mismatch"
     assert isinstance(obj["text"], str), f"{where}: text must be str"
     assert isinstance(obj["pub_date"], str), f"{where}: pub_date must be str"
-    assert (obj["image"] is None) or isinstance(obj["image"], str), (
-        f"{where}: image must be str or null"
-    )
-    assert (obj["group"] is None) or isinstance(obj["group"], int), (
-        f"{where}: group must be int or null"
-    )
+    assert (obj["image"] is None) or isinstance(
+        obj["image"], str
+    ), f"{where}: image must be str or null"
+    assert (obj["group"] is None) or isinstance(
+        obj["group"], int
+    ), f"{where}: group must be int or null"
 
 
 def _assert_comment(obj: Any, where: str, username: Optional[str]) -> None:
@@ -173,18 +172,10 @@ def _assert_comment(obj: Any, where: str, username: Optional[str]) -> None:
 
 def _collect_leaf_requests(node: Dict[str, Any]) -> List[Dict[str, Any]]:
     out = []
-    if (
-        isinstance(node, dict)
-        and "item" in node
-        and isinstance(node["item"], list)
-    ):
+    if isinstance(node, dict) and "item" in node and isinstance(node["item"], list):
         for ch in node["item"]:
             out.extend(_collect_leaf_requests(ch))
-    if (
-        isinstance(node, dict)
-        and "request" in node
-        and node.get("request") is not None
-    ):
+    if isinstance(node, dict) and "request" in node and node.get("request") is not None:
         out.append(node)
     return out
 
@@ -240,19 +231,14 @@ def run() -> int:  # noqa: C901
                     headers = {}
                     # Keep explicit headers, but don't override Authorization.
                     for h in req.get("header") or []:
-                        if (
-                            h.get("key")
-                            and (h.get("disabled") is not True)
-                        ):
+                        if h.get("key") and (h.get("disabled") is not True):
                             headers[str(h["key"])] = str(h.get("value", ""))
 
                     # Postman auth can be defined on node or on request.
                     # Prefer request-level auth.
                     auth_for_request = req.get("auth") or inherited or {}
                     headers.update(
-                        _auth_headers_from_postman_auth(
-                            auth_for_request or {}, vars_
-                        )
+                        _auth_headers_from_postman_auth(auth_for_request or {}, vars_)
                     )
 
                     if method in ("POST", "PUT", "PATCH"):
@@ -282,9 +268,8 @@ def run() -> int:  # noqa: C901
                         path = url.replace(base_url, "")
 
                         if path.startswith("/api-token-auth"):
-                            assert (
-                                "token" in data
-                                and isinstance(data["token"], str)
+                            assert "token" in data and isinstance(
+                                data["token"], str
                             ), "auth: token missing"
                         elif path == "/groups/" and method == "GET":
                             assert (
@@ -333,9 +318,10 @@ def run() -> int:  # noqa: C901
                                 node.get("name", "comments list")[0:80],
                                 username,
                             )
-                        elif (
-                            re.match(r"^/posts/\\d+/comments/$", path)
-                            and method in ("POST", "PUT", "PATCH")
+                        elif re.match(r"^/posts/\\d+/comments/$", path) and method in (
+                            "POST",
+                            "PUT",
+                            "PATCH",
                         ):
                             _assert_comment(
                                 data,
@@ -380,9 +366,7 @@ def run() -> int:  # noqa: C901
                                 "create_comment_for_permission_tests // User"
                             ):
                                 vars_[COMMENT_ID_FOR_PERMISSION_TESTS] = obj_id
-                            elif name == (
-                                "create_post_from_another_author // Admin"
-                            ):
+                            elif name == ("create_post_from_another_author // Admin"):
                                 vars_["negative_test_post"] = data["id"]
                         successes += 1
                     else:

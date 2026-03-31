@@ -8,8 +8,8 @@ from django.db import connection
 
 
 class PostsConfig(AppConfig):
-    default_auto_field = 'django.db.models.BigAutoField'
-    name = 'posts'
+    default_auto_field = "django.db.models.BigAutoField"
+    name = "posts"
 
     def ready(self):
         """
@@ -26,9 +26,8 @@ class PostsConfig(AppConfig):
             return
 
         # Avoid running on pytest/import-only contexts.
-        if (
-            any("pytest" in arg for arg in sys.argv)
-            or os.environ.get("PYTEST_CURRENT_TEST")
+        if any("pytest" in arg for arg in sys.argv) or os.environ.get(
+            "PYTEST_CURRENT_TEST"
         ):
             return
 
